@@ -1,4 +1,4 @@
-# github-stars
+# stargazers-analyzer
 
 ## Project setup
 ```

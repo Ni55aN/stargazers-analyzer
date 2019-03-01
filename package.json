@@ -1,5 +1,5 @@
 {
-  "name": "github-stars",
+  "name": "stargazers-analyzer",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,12 +7,16 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "axios": "^0.18.0",
+    "dexie": "^2.0.4",
     "vue": "^2.6.6"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.1.1",
     "@vue/cli-service": "^3.1.1",
     "node-sass": "^4.9.0",
+    "pug": "^2.0.3",
+    "pug-plain-loader": "^1.0.0",
     "sass-loader": "^7.1.0",
     "vue-template-compiler": "^2.5.21"
   },
