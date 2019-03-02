@@ -1,6 +1,9 @@
 <template lang="pug">
 .app
   .stargazers
+    div
+      input(v-model="accessToken")
+      | access token
     input(v-model="repo")
     button(@click="load") Load
     input(type="checkbox" v-model="resume")
@@ -23,12 +26,16 @@ export default {
   },
   data() {
     return {
+      accessToken: localStorage.getItem('accessToken') || '',
       repo: '',
       resume: true,
       users: [],
     }
   },
   watch: {
+    accessToken(val) {
+      localStorage.setItem('accessToken', val);
+    },
     async repo(val) {
       localStorage.setItem('lastRepo', val);
       const db = await openDB();

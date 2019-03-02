@@ -1,8 +1,9 @@
 import axios from 'axios';
 
 const requestAPI = async (path, page = 1, tries = 5) => {
+    const token = localStorage.getItem('accessToken');
     try {
-        return await axios.get('https://api.github.com/'+path+'?access_token=9137998f61ec2dc8ca525dc857cfd70042fbb28a&page='+page);
+        return await axios.get(`https://api.github.com/${path}?access_token=${token}&page=${page}`);
     } catch(e) {
         console.log(e);
     }
