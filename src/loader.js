@@ -1,12 +1,9 @@
 import axios from 'axios';
 
-const requestAPI = async (path, page = 1, tries = 5) => {
+const requestAPI = async (path, page = 1) => {
     const token = localStorage.getItem('accessToken');
-    try {
-        return await axios.get(`https://api.github.com/${path}?access_token=${token}&page=${page}`);
-    } catch(e) {
-        console.log(e);
-    }
+    
+    return await axios.get(`https://api.github.com/${path}?access_token=${token}&page=${page}`);
 }
 
 export async function loadStargazers(repo, page = 1, callback) {
@@ -16,12 +13,20 @@ export async function loadStargazers(repo, page = 1, callback) {
     do {
         res = await requestAPI('repos/'+repo+'/stargazers', page++);
         
-        res.data.map(starg => callback(starg));
+        for(let starg of res.data) {
+            await callback(starg)
+        }
     } while (res.data.length > 0)
 }
 
 export async function loadUser(login) {
     const res = (await requestAPI('users/'+login));
+
+    return res.data;
+}
+
+export async function loadRepo(repo) {
+    const res = (await requestAPI('repos/'+repo));
 
     return res.data;
 }
