@@ -1,71 +1,47 @@
 <template lang="pug">
 .app
-  .stargazers
-    div
-      input(v-model="accessToken")
-      | access token
-    input(v-model="repo")
-    button(@click="load") Load
-    input(type="checkbox" v-model="resume")
-    label Resume
-    .count Count: {{users.length}}
-    div(v-for="user in users")
-      div {{user.login}}
-  Analyze.analyze(:stargazers="users")
+  .col.sidebar
+    Steps(:current="step" direction="vertical")
+      Step.step(title="Find" @click.native="step = 0")
+      Step.step(title="View" @click.native="step = 1")
+      Step.step(title="Analyze" @click.native="step = 2")
+    Card.card
+      p(slot="title") Access token
+      Input(v-model="accessToken")
+  .col.content
+    Stargazers(v-if="step === 0")
+    List(v-if="step === 1")
+    Analyze(v-if="step === 2")
 </template>
 
 <script>
 import Analyze from './Analyze';
-import { loadStargazers } from './loader';
-import openDB from './db';
+import List from './List';
+import Stargazers from './Stargazers';
+import RepoService from './repo.service';
+import UsersService from './users.service';
 
 export default {
   name: 'app',
+  provide: {
+    repoService: new RepoService(),
+    usersService: new UsersService()
+  },
   components: {
-    Analyze
+    Analyze,
+    Stargazers,
+    List
   },
   data() {
     return {
       accessToken: localStorage.getItem('accessToken') || '',
-      repo: '',
-      resume: true,
-      users: [],
+      step: 0
     }
   },
   watch: {
     accessToken(val) {
       localStorage.setItem('accessToken', val);
-    },
-    async repo(val) {
-      localStorage.setItem('lastRepo', val);
-      const db = await openDB();
-
-      this.users = await db.stargazers.where('repo').equals(this.repo).toArray();
     }
-  },
-  methods: {
-    async load() {
-      const db = await openDB();
-      let page = 1;
-      if(this.resume) {
-        const count = await db.stargazers.where('repo').equals(this.repo).count();
-
-        page = Math.floor(count/30) + 1;
-      } else {
-        await db.stargazers.where('repo').equals(this.repo).delete();
-        this.users = [];
-      }
-      
-      await loadStargazers(this.repo, page, async starg => {
-        if(!await db.stargazers.get({ repo: this.repo, login: starg.login })) {
-          await db.stargazers.add({ repo: this.repo, ...starg });
-          this.users.push(starg);
-        }
-      })
-    }
-  },
-  mounted() {
-    this.repo = localStorage.getItem('lastRepo') || '';
   }
 }
 </script>
@@ -73,8 +49,14 @@ export default {
 <style lang="sass">
 .app
   display: flex
-  .stargazers
+  .col
+    margin: 1%
+  .content
+    display: flex
     flex: 1
-  .analyze
-    flex: 2
+    align-items: center
+    justify-content: center
+    min-height: 90vh
+  .step
+    cursor: pointer
 </style>
