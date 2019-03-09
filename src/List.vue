@@ -123,9 +123,9 @@ export default {
     }
   },
   async mounted() {
-    for(let user of this.repoService.users) {
-      await this.usersService.load(user.login, true);
-    }
+    const logins = this.repoService.users.map(u => u.login);
+    
+    await this.usersService.loadAll(logins);
   }
 }
 </script>

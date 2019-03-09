@@ -23,4 +23,12 @@ export default class {
             Vue.set(this.list, login, user);
         }
     }
+
+    async loadAll(logins) {
+        const users = await db.users.where('login').anyOf(logins).toArray();
+        
+        users.forEach(user => {
+            Vue.set(this.list, user.login, user);
+        })
+    }
 }
