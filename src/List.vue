@@ -132,6 +132,7 @@ export default {
 
 <style lang="sass" scoped>
 .list
+  width: 100%
   .card
     margin-bottom: 1em
   .switch
