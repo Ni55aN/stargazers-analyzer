@@ -9,7 +9,7 @@ export default {
     count: Number,
     overflowCount: {
       type: Number,
-      default: 20000
+      default: 99999
     }
   }
 }
