@@ -19,14 +19,15 @@
 <script>
 import debounce from 'debounce';
 import Badge from './components/Badge';
-import inprogress from './mixins/inprogress';
+import inprogressMixin from './mixins/inprogress';
+import errorMixin from './mixins/error';
 
 export default {
   inject: ['repoService'],
   components: {
     Badge
   },
-  mixins: [ inprogress ],
+  mixins: [ inprogressMixin, errorMixin ],
   data() {
     return {
       max: 200000,
@@ -42,12 +43,12 @@ export default {
     repoName: debounce(async function (val) {
       localStorage.setItem('lastRepo', val);
 
-      await this.inprogressWrapper(() => this.repoService.setRepo(this.repoName));
+      await this.catchError(() => this.inprogressWrapper(() => this.repoService.setRepo(this.repoName)))
     },500)
   },
   methods: {
     async loadStars() {
-      await this.inprogressWrapper(() => this.repoService.loadStars(this.resume))
+      await this.catchError(() => this.inprogressWrapper(() => this.repoService.loadStars(this.resume)))
     }
   },
   async mounted() {

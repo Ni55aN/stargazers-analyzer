@@ -22,14 +22,15 @@
 
 <script>
 import Badge from './components/Badge';
-import inprogress from './mixins/inprogress';
+import inprogressMixin from './mixins/inprogress';
+import errorMixin from './mixins/error';
 
 export default {
   inject: ['repoService', 'usersService'],
   components: {
     Badge
   },
-  mixins: [ inprogress ],
+  mixins: [ inprogressMixin, errorMixin ],
   data() {
     return {
       page: 1,
@@ -120,9 +121,11 @@ export default {
       this.page = num;
     },
     async loadUsersDetail() {
-      for(let user of this.incompleteUsers) {
-        await this.usersService.load(user.login);
-      }
+      await this.catchError(() => this.inprogressWrapper(async () => {
+        for(let user of this.incompleteUsers) {
+          await this.usersService.load(user.login);
+        }
+      }));
     }
   },
   async mounted() {
