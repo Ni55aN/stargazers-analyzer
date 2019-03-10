@@ -1,7 +1,8 @@
 <template lang="pug">
 .list
   Card.card(title="Users")
-    Button(@click="loadUsersDetail" type="primary") Load details
+    Button(@click="loadUsersDetail" type="primary" :disabled="inprogress") Load details
+    Spin.spin(size="large" v-if="inprogress")
   Progress(:percent="detailUsers.length/users.length*100" hide-info :stroke-width="5")
   .badges
     Badge(:count="users.length") Users
@@ -21,12 +22,14 @@
 
 <script>
 import Badge from './components/Badge';
+import inprogress from './mixins/inprogress';
 
 export default {
   inject: ['repoService', 'usersService'],
   components: {
     Badge
   },
+  mixins: [ inprogress ],
   data() {
     return {
       page: 1,
@@ -124,8 +127,8 @@ export default {
   },
   async mounted() {
     const logins = this.repoService.users.map(u => u.login);
-    
-    await this.usersService.loadAll(logins);
+
+    await this.inprogressWrapper(() => this.usersService.loadAll(logins));
   }
 }
 </script>
@@ -143,4 +146,6 @@ export default {
   margin: 1em
   margin-left: auto
   display: table
+.spin
+  display: inline-block
 </style>

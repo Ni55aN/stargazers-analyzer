@@ -5,7 +5,8 @@
     Input.field(v-model="repoName")
     Tooltip(content="Continue loading stargazers (don't delete already loaded)" :max-width="200" placement="top")
       Checkbox.field(v-model="resume") Resume
-    Button.field(@click="repoService.loadStars(resume)" type="primary") Load
+    Button.field(@click="loadStars" type="primary" :disabled="inprogress") Load
+    Spin.spin(v-if="inprogress")
   Progress(:percent="users.length/repo.stargazers_count*100" hide-info :stroke-width="5")
   .badges
     Badge(:count="users.length") Loaded stargazers
@@ -18,12 +19,14 @@
 <script>
 import debounce from 'debounce';
 import Badge from './components/Badge';
+import inprogress from './mixins/inprogress';
 
 export default {
   inject: ['repoService'],
   components: {
     Badge
   },
+  mixins: [ inprogress ],
   data() {
     return {
       max: 200000,
@@ -39,8 +42,13 @@ export default {
     repoName: debounce(async function (val) {
       localStorage.setItem('lastRepo', val);
 
-      await this.repoService.setRepo(this.repoName);
+      await this.inprogressWrapper(() => this.repoService.setRepo(this.repoName));
     },500)
+  },
+  methods: {
+    async loadStars() {
+      await this.inprogressWrapper(() => this.repoService.loadStars(this.resume))
+    }
   },
   async mounted() {
     this.repoName = localStorage.getItem('lastRepo') || '';
@@ -52,4 +60,6 @@ export default {
 .field
   width: auto
   margin-right: 1em
+.spin
+  display: inline-block
 </style>
