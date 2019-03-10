@@ -20,8 +20,8 @@ export default class {
 
     async setRepo(name) {
         this.name = name;
-        this.data = await loadRepo(name);
         this.users = await db.stargazers.where('repo').equals(this.name).toArray();
+        this.data = await loadRepo(name);
     }
 
     async loadStars(resume) {
