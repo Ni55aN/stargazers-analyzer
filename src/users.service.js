@@ -16,8 +16,13 @@ export default class {
         let user = await db.users.get({ login });
 
         if(!user && !storageOnly) {
-            user = await loadUser(login);
-            db.users.add(user);
+            try {
+                user = await loadUser(login);
+                db.users.add(user);
+            } catch(e) {
+                if(!e.response || e.response.status !== 404)
+                    throw e
+            }
         }
         if(user) {
             Vue.set(this.list, login, user);
