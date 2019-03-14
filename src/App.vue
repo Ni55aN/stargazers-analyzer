@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import Vue from 'vue';
 import Analyze from './Analyze';
 import List from './List';
 import Stargazers from './Stargazers';
@@ -24,8 +25,8 @@ import UsersService from './users.service';
 export default {
   name: 'app',
   provide: {
-    repoService: new RepoService(),
-    usersService: new UsersService()
+    repoService: Vue.observable(new RepoService()),
+    usersService: Vue.observable(new UsersService())
   },
   components: {
     Analyze,

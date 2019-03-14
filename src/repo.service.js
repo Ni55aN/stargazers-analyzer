@@ -4,19 +4,10 @@ import { loadStargazers, loadRepo, loadUser } from './loader';
 
 export default class {
     constructor() {
-        this._vue = new Vue({ data: {
-            name: {},
-            data: {},
-            users: []
-        }})
+      this.name = '';
+      this.data = {};
+      this.users = [];
     }
-
-    get name() { return this._vue.name }
-    set name(v) { return this._vue.name = v }
-    get data() { return this._vue.data }
-    set data(v) { return this._vue.data = v }
-    get users() { return this._vue.users }
-    set users(v) { return this._vue.users = v }
 
     async setRepo(name) {
         this.name = name;
