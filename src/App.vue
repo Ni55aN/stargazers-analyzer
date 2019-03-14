@@ -25,8 +25,8 @@ import UsersService from './users.service';
 export default {
   name: 'app',
   provide: {
-    repoService: Vue.observable(new RepoService()),
-    usersService: Vue.observable(new UsersService())
+    repoService: new RepoService(),
+    usersService: new UsersService()
   },
   components: {
     Analyze,

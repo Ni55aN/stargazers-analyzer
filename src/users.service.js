@@ -5,6 +5,7 @@ import { loadUser } from './loader';
 export default class {
     constructor() {
         this.list = {}
+        Vue.observable(this)
     }
 
     async load(login, storageOnly = false) {

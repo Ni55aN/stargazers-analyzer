@@ -7,6 +7,7 @@ export default class {
       this.name = '';
       this.data = {};
       this.users = [];
+      Vue.observable(this)
     }
 
     async setRepo(name) {
