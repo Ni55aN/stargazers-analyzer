@@ -28,10 +28,8 @@ export default class {
     }
 
     await loadStargazers(this.name, page, async (star) => {
-      const data = { repo: this.name, login: star.login };
-
-      if (!await db.stargazers.get(data)) {
-        await db.stargazers.add(data);
+      if (!await db.stargazers.get({ repo: this.name, id: star.id })) {
+        await db.stargazers.add({ repo: this.name, id: star.id, login: star.login });
         this.users.push(star);
       }
     })
